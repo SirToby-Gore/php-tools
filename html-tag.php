@@ -3,14 +3,14 @@
 class Tag {
     private string $tag_name;
     private string $inner_html;
-    private bool $closed;
+    private bool $self_closed;
     private array $attributes;
     private array $children;
 
-    public function __construct(string $tag_name = 'div', string $inner_html = '', bool $closed = TRUE, array $attributes = [], array $children = []) {
+    public function __construct(string $tag_name = 'div', string $inner_html = '', bool $self_closed = TRUE, array $attributes = [], array $children = []) {
         $this->tag_name = $tag_name;
         $this->inner_html = $inner_html;
-        $this->closed = $closed;
+        $this->self_closed = $self_closed;
         $this->attributes = $attributes;
         $this->children = $children;
     }
@@ -29,7 +29,12 @@ class Tag {
         echo "<{$this->tag_name}";
         if ($this->attributes) {
             foreach ($this->attributes as $key => $value) {
-                echo " {$key}=\"{$value}\"";
+                if ($value != NULL) {
+                    echo " {$key}=\"{$value}\"";
+                }
+                else {
+                    echo " {$key}";
+                }
             }
         }
         echo ">";
@@ -50,9 +55,10 @@ class Tag {
     }
 
     private function render_closing(): void {
-        if ($this->closed) {
+        if ($this->self_closed) {
             echo "</{$this->tag_name}>";
         }
+        echo "\n";
     }
 
     public static function top_of_file(): void {
